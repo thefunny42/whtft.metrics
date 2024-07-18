@@ -19,6 +19,9 @@ fail_under = 100
 [tool.hatch.version]
 path = "src/whtft/metrics/__init__.py"
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/whtft/metrics"]
+
 [tool.hatch.metadata.hooks.requirements_txt]
 files = ["requirements.txt"]
 
