@@ -1,5 +1,6 @@
-from whtft.metrics import Metrics
 import pytest
+
+from whtft.metrics import Metrics
 
 
 @pytest.mark.asyncio
