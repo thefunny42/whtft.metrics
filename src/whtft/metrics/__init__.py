@@ -1,5 +1,5 @@
 from functools import wraps
-
+import asyncio
 import prometheus_client
 
 __version__ = "0.1.0"
@@ -31,17 +31,34 @@ class Metrics:
                 doc=doc or func.__doc__,
             )
 
-            @wraps(func)
-            async def wrapper(*args, **kwargs):
-                try:
-                    result = await func(*args, **kwargs)
-                except Exception as error:
-                    failure.inc()
-                    raise error
-                else:
-                    success.inc()
-                    return result
+            if asyncio.iscoroutinefunction(func):
 
-            return wrapper
+                @wraps(func)
+                async def wrapper_async(*args, **kwargs):
+                    try:
+                        result = await func(*args, **kwargs)
+                    except Exception as error:
+                        failure.inc()
+                        raise error
+                    else:
+                        success.inc()
+                        return result
+
+                return wrapper_async
+
+            else:
+
+                @wraps(func)
+                def wrapper(*args, **kwargs):
+                    try:
+                        result = func(*args, **kwargs)
+                    except Exception as error:
+                        failure.inc()
+                        raise error
+                    else:
+                        success.inc()
+                        return result
+
+                return wrapper
 
         return decorator
