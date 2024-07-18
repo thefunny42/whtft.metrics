@@ -1,5 +1,6 @@
 from functools import wraps
-from prometheus_client import Counter, make_asgi_app
+
+import prometheus_client
 
 __version__ = "0.1.0"
 
@@ -11,12 +12,14 @@ class Metrics:
 
     @property
     def app(self):
-        return make_asgi_app()
+        return prometheus_client.make_asgi_app()
 
     def new(self, name: str, doc: str | None):
         doc = doc or name
-        success = Counter(f"{self.prefix}_{name}", f"{doc}")
-        failure = Counter(f"{self.prefix}_{name}_failures", f"{doc} failures")
+        success = prometheus_client.Counter(f"{self.prefix}_{name}", f"{doc}")
+        failure = prometheus_client.Counter(
+            f"{self.prefix}_{name}_failures", f"{doc} failures"
+        )
         return (success, failure)
 
     def measure(self, name: str | None = None, doc: str | None = None):
