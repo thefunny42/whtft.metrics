@@ -1,5 +1,6 @@
-from functools import wraps
 import asyncio
+from functools import wraps
+
 import prometheus_client
 
 __version__ = "0.1.0"
